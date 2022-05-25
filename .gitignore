@@ -106,6 +106,7 @@ env.bak/
 venv.bak/ 
 env
 venv
+media
 
 # mkdocs documentation 
 /site 

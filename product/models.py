@@ -1,12 +1,15 @@
 from django.db import models
 
 from django.utils.text import slugify
+from django.dispatch import receiver
+from django.db.models.signals import pre_save
 
 
 class Product(models.Model):
     title = models.CharField(max_length=30)
     price = models.IntegerField()
     category = models.CharField(max_length=50, null=True)
+    # default = 'NULL'
 
     def __str__(self):
         return f'{self.title} : {self.price} ({self.category})'
@@ -24,6 +27,12 @@ class Category(models.Model):
         return self.name
 
 
+@receiver(pre_save, sender=Category)
+def product_pre_save(sender, instance, *args, **kwargs):
+    if not instance.slug:
+        instance.slug = slugify(instance.name)
+
+
 class NewProduct(models.Model):
     name = models.CharField(max_length=150)
     description = models.TextField()
@@ -36,4 +45,6 @@ class NewProduct(models.Model):
 
     def __str__(self):
         return f'{self.name} - {self.price} (category: {self.category})'
+
+
 
